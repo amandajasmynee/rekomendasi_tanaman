@@ -1,0 +1,10 @@
+01_rawdata/
+02_processing/
+03_final/
+04_report/
+*.tif
+*.nc
+*.qmd
+venv/
+.venv/
+node_modules/
