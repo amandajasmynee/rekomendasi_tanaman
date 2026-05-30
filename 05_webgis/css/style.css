@@ -5,7 +5,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background: #1a1a2e;
   color: #eee;
 }
@@ -38,7 +38,7 @@ body {
   position: fixed;
   bottom: 30px;
   right: 16px;
-  width: 280px;
+  width: 300px;
   background: rgba(22, 33, 62, 0.95);
   border: 1px solid #0f3460;
   border-radius: 12px;
@@ -60,7 +60,7 @@ body {
   align-items: center;
   gap: 10px;
   padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .rank-item:last-child {
@@ -79,9 +79,22 @@ body {
   flex-shrink: 0;
 }
 
-.rank-1 { background: #FFD700; color: #333; }
-.rank-2 { background: #C0C0C0; color: #333; }
-.rank-3 { background: #CD7F32; color: #fff; }
+.rank-1 {
+  background: #ffd700;
+  color: #333;
+}
+.rank-2 {
+  background: #c0c0c0;
+  color: #333;
+}
+.rank-3 {
+  background: #cd7f32;
+  color: #fff;
+}
+.rank-4 {
+  background: #4caf50;
+  color: #fff;
+}
 
 .rank-name {
   flex: 1;
@@ -89,38 +102,7 @@ body {
   font-weight: 500;
 }
 
-.rank-score {
-  font-size: 13px;
-  color: #81c784;
-  font-weight: 600;
-}
-
-/* Legenda */
-#legend {
-  position: fixed;
-  bottom: 30px;
-  left: 16px;
-  background: rgba(22, 33, 62, 0.92);
-  border: 1px solid #0f3460;
-  border-radius: 10px;
-  padding: 12px 14px;
-  z-index: 1000;
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-#legend strong {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  color: #90caf9;
-}
-
-.leg-color {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  margin-right: 6px;
-  vertical-align: middle;
+.rank-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
 }

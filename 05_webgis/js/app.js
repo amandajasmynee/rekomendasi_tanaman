@@ -15,6 +15,8 @@ const TANAMAN = {
   cabai_mean: "Cabai",
   tomat_mean: "Tomat",
   kentang_mean: "Kentang",
+  wortel_mean: "Wortel",
+  tebu_mean: "Tebu",
 };
 
 const EMOJI = {
@@ -23,6 +25,8 @@ const EMOJI = {
   Cabai: "🌶️",
   Tomat: "🍅",
   Kentang: "🥔",
+  Wortel: "🥕",
+  Tebu: "🎋",
 };
 
 // ─── Fungsi warna polygon ────────────────────────────────────────
@@ -50,18 +54,15 @@ function tampilkanInfo(feature) {
   const props = feature.properties;
 
   const namaDesa =
-    props.NAME_4 ||
-    props.WADMKD ||
-    props.NAMOBJ ||
-    "Desa/Kelurahan";
+    props.NAME_4 || props.WADMKD || props.NAMOBJ || "Desa/Kelurahan";
 
   const ranking = getRanking(props);
-  const top3 = ranking.slice(0, 3);
+  const top4 = ranking.slice(0, 4);
 
   const html = `
     <h2>📍 ${namaDesa}</h2>
 
-    ${top3
+    ${top4
       .map(
         (item, i) => `
         <div class="rank-item">
@@ -73,11 +74,8 @@ function tampilkanInfo(feature) {
             ${EMOJI[item.nama]} ${item.nama}
           </div>
 
-          <div class="rank-score">
-            ${item.skor.toFixed(3)}
-          </div>
         </div>
-      `
+      `,
       )
       .join("")}
 
@@ -92,16 +90,13 @@ function tampilkanInfo(feature) {
 // ─── Load GeoJSON ────────────────────────────────────────────────
 let selectedLayer = null;
 
-fetch("data/malang_raya_desa_rank.geojson")
+fetch("data/malang_raya_desa_rank_updated.geojson")
   .then((res) => res.json())
 
   .then((data) => {
-
     const geojsonLayer = L.geoJSON(data, {
-
       // ─── Style default polygon ────────────────────────────────
       style: function (feature) {
-
         const ranking = getRanking(feature.properties);
         const topSkor = ranking[0].skor;
 
@@ -114,7 +109,6 @@ fetch("data/malang_raya_desa_rank.geojson")
 
       // ─── Event tiap polygon ───────────────────────────────────
       onEachFeature: function (feature, layer) {
-
         const namaDesa =
           feature.properties.NAME_4 ||
           feature.properties.WADMKD ||
@@ -130,10 +124,8 @@ fetch("data/malang_raya_desa_rank.geojson")
 
         // ─── Klik polygon ───────────────────────────────────────
         layer.on("click", function () {
-
           // Reset layer sebelumnya
           if (selectedLayer) {
-
             selectedLayer.setStyle({
               weight: 0,
               fillOpacity: 0.12,
@@ -155,22 +147,18 @@ fetch("data/malang_raya_desa_rank.geojson")
 
         // ─── Hover masuk ────────────────────────────────────────
         layer.on("mouseover", function () {
-
           if (layer !== selectedLayer) {
-
             layer.setStyle({
               weight: 1.2,
               color: "#ffffff",
-              fillOpacity: 0.30,
+              fillOpacity: 0.3,
             });
           }
         });
 
         // ─── Hover keluar ───────────────────────────────────────
         layer.on("mouseout", function () {
-
           if (layer !== selectedLayer) {
-
             layer.setStyle({
               weight: 0,
               fillOpacity: 0.12,
@@ -185,11 +173,9 @@ fetch("data/malang_raya_desa_rank.geojson")
 
     // Auto zoom ke area data
     map.fitBounds(geojsonLayer.getBounds());
-
   })
 
   .catch((err) => {
-
     console.error("Gagal load GeoJSON:", err);
 
     document.getElementById("info-content").innerHTML =
