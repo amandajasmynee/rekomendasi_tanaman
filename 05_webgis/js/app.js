@@ -1,17 +1,17 @@
 // ─── Inisialisasi peta ───────────────────────────────────────────
 const map = L.map("map", {
   preferCanvas: true,
+
+  minZoom: 9,
+  maxZoom: 18,
 });
 
 // ─── Basemap OpenStreetMap ───────────────────────────────────────
-L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 18,
-  }
-).addTo(map);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 18,
+}).addTo(map);
 
 // ─── Daftar tanaman & label ──────────────────────────────────────
 const TANAMAN = {
@@ -44,7 +44,6 @@ function getColor(score) {
 
 // ─── Ranking tanaman ─────────────────────────────────────────────
 function getRanking(props) {
-
   const scores = Object.entries(TANAMAN).map(([field, nama]) => ({
     nama: nama,
     skor: parseFloat(props[field]) || 0,
@@ -57,14 +56,13 @@ function getRanking(props) {
 
 // ─── Panel info ──────────────────────────────────────────────────
 function tampilkanInfo(feature) {
-
   const props = feature.properties;
 
-  const namaDesa =
-    props.NAME_4 ||
-    props.WADMKD ||
-    props.NAMOBJ ||
-    "Desa/Kelurahan";
+  const desa = props.WADMKD || props.NAME_4 || "";
+  const kecamatan = props.WADMKC || props.NAME_3 || "";
+  const kabupaten = props.WADMKK || props.NAME_2 || "";
+
+  const namaDesa = [desa, kecamatan, kabupaten].filter(Boolean).join(", ");
 
   const ranking = getRanking(props);
 
@@ -92,7 +90,7 @@ function tampilkanInfo(feature) {
       .join("")}
 
     <p style="font-size:11px; color:#777; margin-top:8px">
-      Metode: SAW (Simple Additive Weighting)
+      * Skor berdasarkan rata-rata ketinggian, curah hujan, dan suhu untuk tahun 2021-2025
     </p>
   `;
 
@@ -103,21 +101,16 @@ function tampilkanInfo(feature) {
 let selectedLayer = null;
 
 fetch("data/malang_raya_desa_rank.geojson")
-
   .then((res) => res.json())
 
   .then((data) => {
-
     const geojsonLayer = L.geoJSON(data, {
-
       // ─── Style default polygon ──────────────────────────────
       style: function (feature) {
-
         const ranking = getRanking(feature.properties);
         const topSkor = ranking[0].skor;
 
         return {
-
           fillColor: getColor(topSkor),
 
           // warna utama polygon
@@ -136,12 +129,18 @@ fetch("data/malang_raya_desa_rank.geojson")
 
       // ─── Event tiap polygon ─────────────────────────────────
       onEachFeature: function (feature, layer) {
+        const desa =
+          feature.properties.WADMKD || feature.properties.NAME_4 || "";
 
-        const namaDesa =
-          feature.properties.NAME_4 ||
-          feature.properties.WADMKD ||
-          feature.properties.NAMOBJ ||
-          "Desa/Kelurahan";
+        const kecamatan =
+          feature.properties.WADMKC || feature.properties.NAME_3 || "";
+
+        const kabupaten =
+          feature.properties.WADMKK || feature.properties.NAME_2 || "";
+
+        const namaDesa = [desa, kecamatan, kabupaten]
+          .filter(Boolean)
+          .join(", ");
 
         // Tooltip hover
         layer.bindTooltip(namaDesa, {
@@ -152,12 +151,9 @@ fetch("data/malang_raya_desa_rank.geojson")
 
         // ─── Klik polygon ─────────────────────────────────────
         layer.on("click", function () {
-
           // Reset polygon sebelumnya
           if (selectedLayer) {
-
             selectedLayer.setStyle({
-
               fillOpacity: 0.18,
 
               weight: 0.08,
@@ -167,7 +163,6 @@ fetch("data/malang_raya_desa_rank.geojson")
 
           // Highlight smooth
           layer.setStyle({
-
             fillOpacity: 0.35,
 
             weight: 0.12,
@@ -182,14 +177,11 @@ fetch("data/malang_raya_desa_rank.geojson")
 
         // ─── Hover masuk ──────────────────────────────────────
         layer.on("mouseover", function () {
-
           if (layer !== selectedLayer) {
-
             layer.setStyle({
-
               fillOpacity: 0.26,
 
-              weight: 0.10,
+              weight: 0.1,
               opacity: 0.04,
             });
           }
@@ -197,11 +189,8 @@ fetch("data/malang_raya_desa_rank.geojson")
 
         // ─── Hover keluar ─────────────────────────────────────
         layer.on("mouseout", function () {
-
           if (layer !== selectedLayer) {
-
             layer.setStyle({
-
               fillOpacity: 0.18,
 
               weight: 0.08,
@@ -212,16 +201,36 @@ fetch("data/malang_raya_desa_rank.geojson")
       },
     });
 
-    // Tambahkan layer ke map
     geojsonLayer.addTo(map);
 
-    // Auto zoom ke area data
+    // ─── Mask luar Malang Raya ────────────────────────────────
+    fetch("data/mask_jatim.geojson")
+      .then((res) => res.json())
+      .then((maskData) => {
+        L.geoJSON(maskData, {
+          style: {
+            fillColor: "#ffffff",
+            fillOpacity: 0.55,
+            color: "#ffffff",
+            weight: 0,
+          },
+          interactive: false,
+        }).addTo(map);
+      });
+
+    // ─── Fokus ke Malang Raya ────────────────────────────────
+
+    // Auto zoom saat pertama dibuka
     map.fitBounds(geojsonLayer.getBounds());
 
+    // Batasi area geser agar tetap fokus Malang Raya
+    map.setMaxBounds(geojsonLayer.getBounds().pad(0.15));
+
+    // Biar user nggak bisa zoom out terlalu jauh
+    map.setMinZoom(10);
   })
 
   .catch((err) => {
-
     console.error("Gagal load GeoJSON:", err);
 
     document.getElementById("info-content").innerHTML =
