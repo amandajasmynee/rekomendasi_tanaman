@@ -1,108 +1,193 @@
+/* ==========================================================================
+   01. GLOBAL STYLES & VARIABLES
+   ========================================================================== */
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #166534;
+    --primary-hover: #14532d;
+    --bg: #f3f4f6;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: #1a1a2e;
-  color: #eee;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
 }
 
+/* ==========================================================================
+   02. HEADER SYSTEM
+   ========================================================================== */
+
 #header {
-  padding: 14px 20px;
-  background: #16213e;
-  border-bottom: 2px solid #0f3460;
+    height: 72px;
+    background: white;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 1000;
+}
+
+.header-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #header h1 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #e2e2e2;
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
 }
 
 #header p {
-  font-size: 13px;
-  color: #aaa;
-  margin-top: 2px;
+    font-size: 13px;
+    color: var(--text-muted);
 }
+
+/* ==========================================================================
+   03. HEADER ACTIONS & COMPONENTS
+   ========================================================================== */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.viewer-badge {
+    background: #dcfce7;
+    color: #166534;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-btn {
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.admin-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* ==========================================================================
+   04. MAIN MAP AREA
+   ========================================================================== */
 
 #map {
-  height: calc(100vh - 60px);
-  width: 100%;
+    height: calc(100vh - 72px);
+    width: 100%;
+    border-top: 1px solid var(--border);
 }
 
-/* Panel info di kanan bawah */
+/* ==========================================================================
+   05. SPATIAL INFO PANEL (RANKING LIST)
+   ========================================================================== */
+
 #info-panel {
-  position: fixed;
-  bottom: 30px;
-  right: 16px;
-  width: 300px;
-  background: rgba(22, 33, 62, 0.95);
-  border: 1px solid #0f3460;
-  border-radius: 12px;
-  padding: 16px;
-  z-index: 1000;
-  backdrop-filter: blur(8px);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
 }
 
 #info-panel h2 {
-  font-size: 14px;
-  color: #90caf9;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #0f3460;
-  padding-bottom: 6px;
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: var(--text);
 }
 
 .rank-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.rank-item:last-child {
-  border-bottom: none;
-}
-
-.rank-badge {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.rank-1 {
-  background: #ffd700;
-  color: #333;
-}
-.rank-2 {
-  background: #c0c0c0;
-  color: #333;
-}
-.rank-3 {
-  background: #cd7f32;
-  color: #fff;
-}
-.rank-4 {
-  background: #4caf50;
-  color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
 }
 
 .rank-name {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 500;
+    font-size: 14px;
+    color: var(--text);
 }
 
-.rank-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
+/* Ranking Badges Color System */
+.rank-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.rank-1 {
+    background: gold;
+    color: black;
+}
+
+.rank-2 {
+    background: silver;
+    color: black;
+}
+
+.rank-3 {
+    background: #cd7f32;
+    color: white;
+}
+
+.rank-4 {
+    background: #4caf50;
+    color: white;
+}
+
+/* ==========================================================================
+   06. RESPONSIVE MEDIA QUERIES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    #header h1 {
+        font-size: 18px;
+    }
+
+    #header p {
+        display: none;
+    }
+
+    .viewer-badge {
+        display: none;
+    }
+
+    #info-panel {
+        width: calc(100% - 20px);
+        left: 10px;
+        right: 10px;
+    }
 }

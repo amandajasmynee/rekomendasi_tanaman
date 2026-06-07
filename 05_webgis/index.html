@@ -1,42 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web GIS Rekomendasi Tanaman – Malang Raya</title>
+    <title>SITAKLIM – Malang Raya</title>
 
-    <!-- Leaflet CSS -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
-
-    <!-- CSS kita sendiri -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-    <!-- Judul -->
+</head>
+<body>
+
     <div id="header">
-      <h1>🌾 Rekomendasi Tanaman Berbasis Kesesuaian Lahan</h1>
-      <p>Klik desa/kelurahan untuk melihat ranking tanaman</p>
+        <div class="header-content">
+            <div>
+                <h1>🌾 SITAKLIM</h1>
+                <p>Sistem Rekomendasi Tanaman Berbasis Zonasi Ketinggian dan Iklim Lahan</p>
+            </div>
+            
+            <div class="header-actions">
+                <a href="login.php" class="admin-btn">🔐 Login Admin</a>
+            </div>
+        </div>
     </div>
 
-    <!-- Container peta -->
+
     <div id="map"></div>
 
-    <!-- Panel info (muncul saat klik) -->
+
     <div id="info-panel">
-      <div id="info-content">
-        <p style="color: #888; font-style: italic">
-          Klik desa untuk melihat rekomendasi
-        </p>
-      </div>
+        <div id="info-content">
+            <h3 style="margin-bottom: 10px">📊 Rekomendasi Tanaman</h3>
+            <p>
+                Pilih salah satu desa atau kelurahan pada peta untuk melihat 4 komoditas tanaman yang paling sesuai
+                berdasarkan kondisi lahan.
+            </p>
+        </div>
     </div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- App kita -->
     <script src="js/app.js"></script>
-  </body>
+
+</body>
 </html>

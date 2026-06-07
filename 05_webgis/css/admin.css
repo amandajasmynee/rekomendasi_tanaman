@@ -1,0 +1,420 @@
+/* ==========================================================================
+   01. GLOBAL STYLES & VARIABLES
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #166534;
+    --primary-hover: #14532d;
+    --bg: #f3f4f6;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --text: #111827;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+    --danger: #dc2626;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* ==========================================================================
+   02. MAIN LAYOUT SYSTEM
+   ========================================================================== */
+
+.admin-layout {
+    display: flex;
+    height: calc(100vh - 72px);
+}
+
+/* ==========================================================================
+   03. TOPBAR & USER PROFILE
+   ========================================================================== */
+
+.topbar {
+    height: 72px;
+    background: white;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+.topbar h2 {
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.topbar p {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* User Info Component */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-details strong {
+    font-size: 14px;
+}
+
+.user-details span {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.header-logout {
+    font-size: 12px;
+    color: #dc2626;
+    text-decoration: none;
+    margin-top: 2px;
+}
+
+.header-logout:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   04. SIDEBAR MECHANICS
+   ========================================================================== */
+
+.sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    background: var(--sidebar-bg);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* Sidebar Sections / Cards */
+.sidebar-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+}
+
+.sidebar-section h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+/* Sidebar Components: Upload */
+.sidebar input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    margin-bottom: 12px;
+}
+
+.sidebar input[type="file"]::file-selector-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.sidebar-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.sidebar-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* ==========================================================================
+   05. DATASET MANAGEMENT (ACTIVE & LIST)
+   ========================================================================== */
+
+/* Active Dataset Area */
+.active-dataset-box {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.active-file {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Dataset List Area */
+.dataset-list {
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.dataset-item {
+    background: #f9fafb;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.dataset-item.active {
+    background: #dcfce7;
+    border-color: #86efac;
+}
+
+.dataset-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    border-color: #86efac;
+}
+
+.dataset-name {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    word-break: break-word;
+    margin-bottom: 8px;
+}
+
+.dataset-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.active-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #bbf7d0;
+    color: #166534;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Dataset Actions & Buttons */
+.dataset-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.dataset-actions form {
+    flex: 1;
+}
+
+.set-active-btn {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.set-active-btn:hover {
+    background: var(--primary-hover);
+}
+
+.delete-btn {
+    width: 100% !important;
+    background: #dc2626 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #b91c1c;
+}
+
+/* ==========================================================================
+   06. MAIN MAP AREA & LEAFLET INTEGRATION
+   ========================================================================== */
+
+.map-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-width: 0;
+}
+
+#map {
+    flex: 1;
+    border: none !important;
+    outline: none !important;
+}
+
+.leaflet-container {
+    border: none !important;
+    outline: none !important;
+}
+
+/* ==========================================================================
+   07. SPATIAL INFO PANEL (RANKING LIST)
+   ========================================================================== */
+
+#info-panel {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+#info-panel h2 {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.rank-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+}
+
+.rank-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.rank-1 {
+    background: gold;
+    color: black;
+}
+
+.rank-2 {
+    background: silver;
+    color: black;
+}
+
+.rank-3 {
+    background: #cd7f32;
+    color: white;
+}
+
+.rank-4 {
+    background: #4caf50;
+    color: white;
+}
+
+/* ==========================================================================
+   08. DARK MODE OVERRIDES
+   ========================================================================== */
+
+body.dark {
+    --bg: #111827;
+    --sidebar-bg: #1f2937;
+    --card-bg: #374151;
+    --text: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border: #4b5563;
+}
+
+body.dark .topbar {
+    background: #1f2937;
+}
+
+body.dark #info-panel {
+    background: #1f2937;
+    color: white;
+}
+
+/* ==========================================================================
+   09. RESPONSIVE MEDIA QUERIES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .admin-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        box-shadow: none;
+    }
+
+    #info-panel {
+        width: calc(100% - 20px);
+        left: 10px;
+        right: 10px;
+    }
+}
