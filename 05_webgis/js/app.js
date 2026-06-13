@@ -202,7 +202,7 @@ fetch("data/current_dataset.json")
         geojsonLayer.addTo(map);
 
         // Memuat Masking Wilayah Luar (Zonasi Fokus Malang Raya)
-        fetch("data/mask_jatim.geojson")
+        fetch("data/mask_jatim_web.geojson")
             .then((res) => res.json())
             .then((maskData) => {
                 L.geoJSON(maskData, {

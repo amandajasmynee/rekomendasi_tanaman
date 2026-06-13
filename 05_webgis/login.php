@@ -52,7 +52,7 @@ session_start();
 
                 <div class="login-note">Portal ini hanya digunakan oleh administrator sistem.</div>
                 <div class="back-link">
-                    <a href="index.html">← Kembali ke Peta</a>
+                    <a href="/">← Kembali ke Peta</a>
                 </div>
 
             </form>
