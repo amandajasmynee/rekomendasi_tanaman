@@ -57,6 +57,36 @@ $datasets = glob("uploads/*.geojson");
                 </form>
             </div>
 
+             <div class="sidebar-section">
+    <h3>Upload Dataset Excel</h3>
+
+<p class="upload-note">
+    Belum punya template?
+</p>
+
+<a href="php/download_template.php" class="download-template-link">
+    📥 Download Template Excel
+</a>
+
+    <form action="php/upload_excel.php"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <input
+            type="file"
+            name="excel"
+            accept=".xlsx,.xls"
+            required
+        />
+
+        <button type="submit" class="sidebar-btn">
+            Upload & Generate
+        </button>
+
+    </form>
+
+</div>
+
             <div class="sidebar-section">
                 <h3>Dataset Aktif</h3>
                 <div class="active-dataset-box">
