@@ -45,8 +45,8 @@ $datasets = glob("uploads/*.geojson");
         </div>
     </header>
 
-
     <div class="admin-layout">
+        
         <aside class="sidebar">
 
             <div class="sidebar-section">
@@ -57,35 +57,20 @@ $datasets = glob("uploads/*.geojson");
                 </form>
             </div>
 
-             <div class="sidebar-section">
-    <h3>Upload Dataset Excel</h3>
+            <div class="sidebar-section">
+                <h3>Upload Dataset Excel</h3>
+                <p class="upload-note">Belum punya template?</p>
+                <a href="php/download_template.php" class="download-template-link">
+                    📥 Download Template Excel
+                </a>
 
-<p class="upload-note">
-    Belum punya template?
-</p>
-
-<a href="php/download_template.php" class="download-template-link">
-    📥 Download Template Excel
-</a>
-
-    <form action="php/upload_excel.php"
-          method="POST"
-          enctype="multipart/form-data">
-
-        <input
-            type="file"
-            name="excel"
-            accept=".xlsx,.xls"
-            required
-        />
-
-        <button type="submit" class="sidebar-btn">
-            Upload & Generate
-        </button>
-
-    </form>
-
-</div>
+                <form action="php/upload_excel.php" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="excel" accept=".xlsx,.xls" required />
+                    <button type="submit" class="sidebar-btn">
+                        Upload & Generate
+                    </button>
+                </form>
+            </div>
 
             <div class="sidebar-section">
                 <h3>Dataset Aktif</h3>
@@ -99,6 +84,8 @@ $datasets = glob("uploads/*.geojson");
             <div class="sidebar-section">
                 <h3>Daftar Dataset</h3>
                 <p class="dataset-count"><?= count($datasets) ?> dataset tersedia</p>
+
+                <input type="text" id="datasetSearch" class="search-input" placeholder="🔍 Cari dataset...">
                 
                 <ul class="dataset-list">
                     <?php foreach ($datasets as $file): ?>
@@ -107,7 +94,7 @@ $datasets = glob("uploads/*.geojson");
                         $isActive = ($filename === $currentDataset);
                         ?>
                         
-                        <li class="dataset-item <?= $isActive ? 'active' : '' ?>">
+                        <li class="dataset-item <?= $isActive ? 'active' : '' ?>" data-name="<?= strtolower($filename) ?>">
                             <div class="dataset-name">
                                 📄 <?= htmlspecialchars($filename) ?>
                             </div>
@@ -134,23 +121,47 @@ $datasets = glob("uploads/*.geojson");
 
         </aside>
 
-
         <main class="map-wrapper">
+
+            <div class="map-search">
+                <input type="text" id="searchVillage" placeholder="🔍 Cari desa atau kecamatan..." autocomplete="off">
+                <div id="searchResult" class="search-result"></div>
+            </div>
+
             <div id="map"></div>
 
             <div id="info-panel">
-                <div id="info-content">
-                    <h3 style="margin-bottom:10px;">🌾 SITAKLIM</h3>
-                    <p style="color:#666;">
-                        Klik salah satu desa atau kelurahan pada peta untuk melihat rekomendasi komoditas tanaman berdasarkan kondisi iklim dan karakteristik lahan.
-                    </p>
+                <div id="panel-header">
+                    <span><h2>🌾 Rekomendasi Tanaman</h2></span>
+                    <button id="toggle-panel">▼</button>
+                </div>
+                <div id="panel-body">
+                    <div id="info-content">
+                        <p style="color:#666">
+                            Klik salah satu desa untuk melihat rekomendasi.
+                        </p>
+                    </div>
                 </div>
             </div>
+
         </main>
+
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/app.js"></script>
 
+    <script>
+        const search = document.getElementById("datasetSearch");
+
+        search.addEventListener("keyup", function() {
+            const keyword = this.value.toLowerCase();
+
+            document.querySelectorAll(".dataset-item").forEach(function(item) {
+                const name = item.dataset.name;
+                item.style.display = name.includes(keyword) ? "" : "none";
+            });
+        });
+    </script>
 </body>
 </html>

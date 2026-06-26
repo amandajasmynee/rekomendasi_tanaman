@@ -84,10 +84,13 @@ function tampilkanInfo(feature) {
     const top4 = ranking.slice(0, 4);
 
     const html = `
-        <h2>📍 ${namaDesa}</h2>
-        ${top4
-            .map(
-                (item, i) => `
+        <div class="panel-location">
+            <h2>📍 ${namaDesa}</h2>
+        </div>
+        <div class="panel-ranking">
+            ${top4
+                .map(
+                    (item, i) => `
                 <div class="rank-item">
                     <div class="rank-badge rank-${i + 1}">
                         ${i + 1}
@@ -97,11 +100,12 @@ function tampilkanInfo(feature) {
                     </div>
                 </div>
             `
-            )
-            .join("")}
-        <p style="font-size:11px; color:#777; margin-top:8px">
-            * Skor berdasarkan rata-rata ketinggian, curah hujan, dan suhu untuk tahun 2021-2025
-        </p>
+                )
+                .join("")}
+            <p style="font-size:11px;color:#777;margin-top:8px">
+                * Skor berdasarkan rata-rata ketinggian, curah hujan, dan suhu tahun 2021–2025
+            </p>
+        </div>
     `;
 
     document.getElementById("info-content").innerHTML = html;
@@ -112,6 +116,7 @@ function tampilkanInfo(feature) {
    ========================================================================== */
 
 let selectedLayer = null;
+let geojsonLayer = null;
 
 // Mengambil konfigurasi dataset aktif saat ini
 fetch("data/current_dataset.json")
@@ -121,7 +126,7 @@ fetch("data/current_dataset.json")
     })
     .then((res) => res.json())
     .then((data) => {
-        const geojsonLayer = L.geoJSON(data, {
+        geojsonLayer = L.geoJSON(data, {
             // Style default masing-masing polygon wilayah
             style: function (feature) {
                 const ranking = getRanking(feature.properties);
@@ -200,6 +205,7 @@ fetch("data/current_dataset.json")
 
         // Menambahkan data utama zonasi ke peta
         geojsonLayer.addTo(map);
+        initSearch();
 
         // Memuat Masking Wilayah Luar (Zonasi Fokus Malang Raya)
         fetch("data/mask_jatim_web.geojson")
@@ -225,3 +231,86 @@ fetch("data/current_dataset.json")
         console.error("Gagal load GeoJSON:", err);
         document.getElementById("info-content").innerHTML = '<p style="color:red">⚠️ Gagal memuat data GeoJSON.</p>';
     });
+
+/* ==========================================================================
+   06. SEARCH DESA / KECAMATAN
+   ========================================================================== */
+
+const searchInput = document.getElementById("searchVillage");
+const searchResult = document.getElementById("searchResult");
+
+function initSearch() {
+    const wilayah = [];
+
+    geojsonLayer.eachLayer(function (layer) {
+        const p = layer.feature.properties;
+
+        wilayah.push({
+            desa: p.WADMKD || "",
+            kecamatan: p.WADMKC || "",
+            get kabupaten() {
+                return p.WADMKK || "";
+            },
+            layer: layer
+        });
+    });
+
+    searchInput.addEventListener("input", function () {
+        const keyword = this.value.trim().toLowerCase();
+
+        searchResult.innerHTML = "";
+
+        if (keyword === "") {
+            searchResult.style.display = "none";
+            return;
+        }
+
+        const hasil = wilayah.filter(function (item) {
+            return (
+                item.desa.toLowerCase().includes(keyword) ||
+                item.kecamatan.toLowerCase().includes(keyword) ||
+                item.kabupaten.toLowerCase().includes(keyword)
+            );
+        });
+
+        hasil.slice(0, 8).forEach(function (item) {
+            const div = document.createElement("div");
+            div.className = "search-item";
+            div.innerHTML = `
+                <strong>${item.desa}</strong>
+                <small style="color:#666;">(${item.kecamatan}, ${item.kabupaten})</small>
+            `;
+
+            div.onclick = function () {
+                map.fitBounds(item.layer.getBounds());
+                item.layer.fire("click");
+                searchResult.style.display = "none";
+                searchInput.value = item.desa;
+            };
+
+            searchResult.appendChild(div);
+        });
+
+        searchResult.style.display = hasil.length ? "block" : "none";
+    });
+}
+
+/* ==========================================================================
+   07. INTERACTION HANDLERS (PANEL TOGGLE)
+   ========================================================================== */
+
+const toggleBtn = document.getElementById("toggle-panel");
+const panelBody = document.getElementById("panel-body");
+
+toggleBtn.addEventListener("click", function () {
+    const ranking = document.querySelector(".panel-ranking");
+    if (!ranking) return;
+
+    ranking.classList.toggle("collapsed");
+
+    if (ranking.classList.contains("collapsed")) {
+        toggleBtn.innerHTML = "▲";
+    } else {
+        toggleBtn.innerHTML = "▼";
+    }
+});
