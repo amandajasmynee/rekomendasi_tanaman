@@ -23,17 +23,28 @@
         </div>
     </div>
 
+    <div class="map-search">
+        <input
+            type="text"
+            id="searchVillage"
+            placeholder="🔍 Cari desa atau kecamatan..."
+            autocomplete="off"
+        >
+        <div id="searchResult" class="search-result"></div>
+    </div>
 
     <div id="map"></div>
 
-
     <div id="info-panel">
-        <div id="info-content">
-            <h3 style="margin-bottom: 10px">📊 Rekomendasi Tanaman</h3>
-            <p>
-                Pilih salah satu desa atau kelurahan pada peta untuk melihat 4 komoditas tanaman yang paling sesuai
-                berdasarkan kondisi lahan.
-            </p>
+        <div id="panel-header">
+            <span>🌾 Rekomendasi Tanaman</span>
+            <button id="toggle-panel">▼</button>
+        </div>
+
+        <div id="panel-body">
+            <div id="info-content">
+                <p>Klik salah satu desa untuk melihat rekomendasi.</p>
+            </div>
         </div>
     </div>
 
