@@ -121,27 +121,37 @@ function normalizeName(string $name): string
 
 $excelData = []; // [normalized_nama => ['curah_hujan'=>..., 'suhu'=>..., 'elevasi'=>...]]
 
-foreach ($rawData as $row) {
-    // Skip baris kosong (semua sel null/string kosong)
+foreach ($rawData as $index => $row) {
+
+    // Skip baris kosong
     if (array_filter($row, fn($v) => $v !== null && $v !== "") === []) {
         continue;
     }
 
+    $rowNumber = $index + 2;
+
     $kabupaten = trim((string)$row[$idxKab]);
-    $kecamatan = trim((string)($row[$idxKecamatan] ?? ""));
-    $namaDesa  = trim((string)($row[$idxDesa] ?? ""));
+    $kecamatan = trim((string)$row[$idxKecamatan]);
+    $namaDesa  = trim((string)$row[$idxDesa]);
 
-    if ($kecamatan === "" || $namaDesa === "") {
-        continue;
+    $chRaw   = trim((string)$row[$idxCH]);
+    $suhuRaw = trim((string)$row[$idxSuhu]);
+    $elevRaw = trim((string)$row[$idxElev]);
+
+    if (
+        !is_numeric($chRaw) ||
+        !is_numeric($suhuRaw) ||
+        !is_numeric($elevRaw)
+    ) {
+
+        header("Location: ../admin.php?error=number&row={$rowNumber}");
+        exit();
+
     }
 
-    $ch   = is_numeric($row[$idxCH]) ? (float)$row[$idxCH] : null;
-    $suhu = is_numeric($row[$idxSuhu]) ? (float)$row[$idxSuhu] : null;
-    $elev = is_numeric($row[$idxElev]) ? (float)$row[$idxElev] : null;
-
-    if ($ch === null || $suhu === null || $elev === null) {
-        continue;
-    }
+    $ch   = (float)$chRaw;
+    $suhu = (float)$suhuRaw;
+    $elev = (float)$elevRaw;
 
     $key = normalizeName($kabupaten) . "|" . normalizeName($kecamatan) . "|" . normalizeName($namaDesa);
 
@@ -349,21 +359,7 @@ if (file_put_contents($newGeoJsonPath, $encoded) === false) {
 unset($encoded);
 
 /* ==========================================================================
-   10. UPDATE CURRENT_DATASET.JSON → AKTIFKAN DATASET BARU
-   ========================================================================== */
-
-$newConfig = ["active_dataset" => $newGeoJsonName];
-$written   = file_put_contents($configPath, json_encode($newConfig, JSON_PRETTY_PRINT));
-
-if ($written === false) {
-    die(
-        "GeoJSON berhasil dibuat ($newGeoJsonName) tetapi gagal memperbarui " .
-        "current_dataset.json. Aktifkan dataset secara manual dari halaman admin."
-    );
-}
-
-/* ==========================================================================
-   11. REDIRECT KE ADMIN.PHP
+   10. REDIRECT KE ADMIN.PHP
    ========================================================================== */
 
 header("Location: ../admin.php");

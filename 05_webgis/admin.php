@@ -68,6 +68,11 @@ $datasets = glob("uploads/*.geojson");
                 case "readexcel":
                     echo "❌ File Excel tidak dapat dibaca. Pastikan menggunakan template yang benar.";
                     break;
+                
+                case "number":
+                    $row = isset($_GET["row"]) ? (int)$_GET["row"] : "?";
+                    echo "❌ Data pada baris ke-{$row} tidak valid. Nilai curah hujan, suhu, dan elevasi harus berupa angka.";
+                    break;
             }
             ?>
         </div>
