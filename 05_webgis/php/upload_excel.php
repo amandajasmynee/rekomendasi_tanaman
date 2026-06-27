@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL & ~E_WARNING);
+
 session_start();
 
 /* ==========================================================================
@@ -26,7 +28,8 @@ $origName = basename($file["name"]);
 $fileExt  = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
 
 if (!in_array($fileExt, ["xlsx", "xls"], true)) {
-    die("Format file harus .xlsx atau .xls. File yang diterima: " . htmlspecialchars($origName));
+    header("Location: ../admin.php?error=format");
+    exit();
 }
 
 // Simpan dengan nama yang di-sanitize (hanya alfanumerik, strip, titik)
@@ -40,7 +43,8 @@ if (!is_dir($excelDir)) {
 $destination = $excelDir . $safeName;
 
 if (!move_uploaded_file($file["tmp_name"], $destination)) {
-    die("Gagal menyimpan file Excel ke server.");
+    header("Location: ../admin.php?error=upload");
+    exit();
 }
 
 /* ==========================================================================
@@ -54,7 +58,8 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 try {
     $spreadsheet = IOFactory::load($destination);
 } catch (\Exception $e) {
-    die("Gagal membaca file Excel: " . htmlspecialchars($e->getMessage()));
+    header("Location: ../admin.php?error=readexcel");
+    exit();
 }
 
 $sheet   = $spreadsheet->getActiveSheet();
@@ -84,7 +89,8 @@ $required = [
 
 foreach ($required as $col) {
     if (!in_array($col, $headers, true)) {
-        die("Kolom wajib tidak ditemukan: '$col'. Header yang terdeteksi: " . implode(", ", $headers));
+        header("Location: ../admin.php?error=template");
+        exit();
     }
 }
 
@@ -316,11 +322,8 @@ unset($feature, $props);
 
 if ($matchCount === 0) {
     @unlink($destination);
-    die(
-        "Tidak ada desa yang cocok antara Excel dan GeoJSON. " .
-        "Periksa apakah kolom nama_desa di Excel sesuai dengan field WADMKD di GeoJSON. " .
-        "Contoh WADMKD di GeoJSON: " . implode(", ", array_slice($noMatchDesa, 0, 5))
-    );
+    header("Location: ../admin.php?error=nodata");
+    exit();
 }
 
 /* ==========================================================================

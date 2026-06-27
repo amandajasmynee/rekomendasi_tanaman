@@ -45,10 +45,43 @@ $datasets = glob("uploads/*.geojson");
         </div>
     </header>
 
+    <?php if (isset($_GET["error"])): ?>
+        <div class="error-message">
+            <?php
+            switch ($_GET["error"]) {
+                case "template":
+                    echo "❌ Format template Excel tidak sesuai. Silakan unduh template terbaru.";
+                    break;
+
+                case "format":
+                    echo "❌ File yang diunggah harus berformat .xlsx atau .xls.";
+                    break;
+
+                case "upload":
+                    echo "❌ Upload file gagal. Silakan coba lagi.";
+                    break;
+
+                case "nodata":
+                    echo "❌ Tidak ada data desa yang cocok dengan dataset aktif.";
+                    break;
+
+                case "readexcel":
+                    echo "❌ File Excel tidak dapat dibaca. Pastikan menggunakan template yang benar.";
+                    break;
+            }
+            ?>
+        </div>
+    <?php endif; ?>
+
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState({}, document.title, "admin.php");
+        }
+    </script>
+
     <div class="admin-layout">
         
         <aside class="sidebar">
-
             <div class="sidebar-section">
                 <h3>Upload Dataset GeoJSON</h3>
                 <form action="php/upload.php" method="POST" enctype="multipart/form-data">
@@ -118,11 +151,9 @@ $datasets = glob("uploads/*.geojson");
                     <?php endforeach; ?>
                 </ul>
             </div>
-
         </aside>
 
         <main class="map-wrapper">
-
             <div class="map-search">
                 <input type="text" id="searchVillage" placeholder="🔍 Cari desa atau kecamatan..." autocomplete="off">
                 <div id="searchResult" class="search-result"></div>
@@ -143,7 +174,6 @@ $datasets = glob("uploads/*.geojson");
                     </div>
                 </div>
             </div>
-
         </main>
 
     </div>
