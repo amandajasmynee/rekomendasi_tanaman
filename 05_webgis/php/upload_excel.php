@@ -138,10 +138,16 @@ foreach ($rawData as $index => $row) {
     $suhuRaw = trim((string)$row[$idxSuhu]);
     $elevRaw = trim((string)$row[$idxElev]);
 
+    // Kalau ketiga kolom kosong, lewati saja
+    if ($chRaw === "" && $suhuRaw === "" && $elevRaw === "") {
+        continue;
+    }
+
+    // Kalau ada yang diisi tetapi bukan angka
     if (
-        !is_numeric($chRaw) ||
-        !is_numeric($suhuRaw) ||
-        !is_numeric($elevRaw)
+        ($chRaw !== "" && !is_numeric($chRaw)) ||
+        ($suhuRaw !== "" && !is_numeric($suhuRaw)) ||
+        ($elevRaw !== "" && !is_numeric($elevRaw))
     ) {
 
         header("Location: ../admin.php?error=number&row={$rowNumber}");
